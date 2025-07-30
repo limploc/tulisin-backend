@@ -117,15 +117,3 @@ class ErrorHandler {
 }
 
 export const globalErrorHandler = ErrorHandler.handle;
-
-export const notFoundHandler = (req: Request, res: Response, next: NextFunction): void => {
-  const error = new AppError(`Cannot ${req.method} ${req.originalUrl}`, 404, ErrorCode.NOT_FOUND);
-
-  next(error);
-};
-
-export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
-};

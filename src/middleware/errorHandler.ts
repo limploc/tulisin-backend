@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError, ValidationError, ErrorResponse, ValidationErrorResponse, ErrorCode } from "../types/errors";
 
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+  };
+}
+
 const isDevelopment = process.env.NODE_ENV === "development";
 
 class ErrorHandler {
@@ -62,14 +68,10 @@ class ErrorHandler {
       return 401;
     }
 
-    if (error.name === "MongoError" && (error as any).code === 11000) {
-      return 409;
-    }
-
     return 500;
   }
 
-  private static logError(error: Error, req: Request): void {
+  private static logError(error: Error, req: AuthenticatedRequest): void {
     const logLevel = error instanceof AppError && error.statusCode < 500 ? "warn" : "error";
 
     console[logLevel]({
@@ -87,13 +89,13 @@ class ErrorHandler {
         url: req.url,
         ip: req.ip,
         userAgent: req.get("User-Agent"),
-        userId: (req as any).user?.id,
+        userId: req.user?.id,
       },
       timestamp: new Date().toISOString(),
     });
   }
 
-  public static handle(error: Error, req: Request, res: Response, next: NextFunction): void {
+  public static handle(error: Error, req: AuthenticatedRequest, res: Response, next: NextFunction): void {
     ErrorHandler.logError(error, req);
 
     const statusCode = ErrorHandler.getStatusCode(error);

@@ -5,6 +5,7 @@ import fs from "fs";
 import { globalErrorHandler } from "./middleware/errorHandler";
 import { initializeDatabase } from "./database/database";
 import { getDatabaseConfig } from "./config/config";
+import routes from "./routes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ const initializeApp = async () => {
     const db = initializeDatabase(getDatabaseConfig());
     await db.testConnection();
 
+    app.use("/api/v1", routes);
     app.use(globalErrorHandler);
 
     app.listen(3000, () => {

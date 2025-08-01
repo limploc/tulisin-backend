@@ -15,3 +15,15 @@ export const getDatabaseConfig = (): DatabaseConfig => {
     connectionTimeoutMillis: parseInt(process.env.DB_CONNECTION_TIMEOUT || "2000"),
   };
 };
+
+export const getJwtConfig = () => {
+  return {
+    secret: process.env.JWT_SECRET || "fallback_secret_key_change_in_production",
+  };
+};
+
+export const getSaltRounds = (): { saltRounds: number } => {
+  return {
+    saltRounds: parseInt(process.env.SALT_ROUNDS || "10"),
+  };
+};

@@ -1,6 +1,5 @@
 import { QueryResult } from "pg";
 import { DatabaseClient, DatabaseTransaction } from "../database/database";
-import { AppError, ErrorCode, ConflictError } from "../types/errors";
 
 export interface UserRow {
   id: string;
@@ -23,28 +22,14 @@ export async function createUser(
 ): Promise<UserRow> {
   const query = `
     INSERT INTO users (name, email, password_hash, created_at, updated_at)
-    VALUES ($1, $2, $3, NOW(), NOW())
-    RETURNING id, name, email, password_hash, created_at, updated_at
-  `;
+    VALUES ($1, $2, $3, NOW(), NOW())`;
 
-  try {
-    const result: QueryResult<UserRow> = await client.query(query, [
-      userData.name,
-      userData.email,
-      userData.passwordHash,
-    ]);
-
-    if (result.rows.length === 0) {
-      throw new AppError("Failed to create user", 500, ErrorCode.INTERNAL_ERROR);
-    }
-
-    return result.rows[0];
-  } catch (error: unknown) {
-    if (error && typeof error === "object" && "code" in error && error.code === "23505") {
-      throw new ConflictError("Email already exists");
-    }
-    throw error;
-  }
+  const result: QueryResult<UserRow> = await client.query(query, [
+    userData.name,
+    userData.email,
+    userData.passwordHash,
+  ]);
+  return result.rows[0];
 }
 
 export async function findUserByEmail(

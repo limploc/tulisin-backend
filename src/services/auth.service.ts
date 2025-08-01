@@ -54,6 +54,7 @@ export async function registerUser(userData: RegisterValidationData): Promise<Au
     };
 
     const userRow = await createUser(transaction, createUserData);
+
     const user = mapUserRowToUser(userRow);
 
     const tokenData = generateToken({

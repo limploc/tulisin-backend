@@ -659,6 +659,7 @@
         "parameters": [
           {
             "name": "sectionId",
+            "required": true,
             "in": "query",
             "description": "Filter notes by section ID",
             "schema": {
@@ -684,14 +685,6 @@
               "type": "integer",
               "minimum": 0,
               "default": 0
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search notes by title or content",
-            "schema": {
-              "type": "string"
             }
           }
         ],
@@ -1260,10 +1253,6 @@
           "title": {
             "type": "string",
             "description": "Note title"
-          },
-          "content": {
-            "type": "string",
-            "description": "Note content"
           },
           "sectionId": {
             "type": "string",

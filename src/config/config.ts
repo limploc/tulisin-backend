@@ -1,7 +1,11 @@
 import dotenv from "dotenv";
 import { DatabaseConfig } from "../database/database";
 
-dotenv.config();
+if (process.env.NODE_ENV === "test") {
+  dotenv.config({ path: ".env.test" });
+} else {
+  dotenv.config();
+}
 
 export const getDatabaseConfig = (): DatabaseConfig => {
   return {
@@ -19,6 +23,7 @@ export const getDatabaseConfig = (): DatabaseConfig => {
 export const getJwtConfig = () => {
   return {
     secret: process.env.JWT_SECRET || "fallback_secret_key_change_in_production",
+    expiresIn: process.env.JWT_EXPIRES_IN || "24h",
   };
 };
 

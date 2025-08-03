@@ -6,7 +6,6 @@
     "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:setup": "NODE_ENV=test ./scripts/setup-test-db.sh",
-    "test:clean": "NODE_ENV=test node -e \"require('./src/config/config'); const {getDatabase} = require('./src/database/database'); const db = getDatabase(); db.query('TRUNCATE TABLE users, sections, notes RESTART IDENTITY CASCADE').then(() => process.exit(0))\"",
     "start": "NODE_ENV=development ts-node dist/index.js",
     "dev": "NODE_ENV=development nodemon --watch src --exec ts-node src/app.ts",
     "build": "tsc"

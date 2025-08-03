@@ -22,7 +22,8 @@ export async function createUser(
 ): Promise<UserRow> {
   const query = `
     INSERT INTO users (name, email, password_hash, created_at, updated_at)
-    VALUES ($1, $2, $3, NOW(), NOW())`;
+    VALUES ($1, $2, $3, NOW(), NOW())
+    RETURNING id, name, email, password_hash, created_at, updated_at`;
 
   const result: QueryResult<UserRow> = await client.query(query, [
     userData.name,

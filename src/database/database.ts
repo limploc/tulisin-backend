@@ -266,7 +266,7 @@ let databaseInstance: Database | null = null;
 
 export function initializeDatabase(config: DatabaseConfig): Database {
   if (databaseInstance) {
-    throw new AppError("Database already initialized", 500, ErrorCode.INTERNAL_ERROR);
+    databaseInstance.close().catch(console.error);
   }
 
   databaseInstance = new Database(config);

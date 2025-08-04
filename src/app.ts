@@ -5,6 +5,7 @@ import fs from "fs";
 import { globalErrorHandler } from "./middleware/errorHandler";
 import { initializeDatabase } from "./database/database";
 import { getDatabaseConfig } from "./config/config";
+import routes from "./routes";
 
 const app = express();
 
@@ -14,12 +15,13 @@ app.use(cors());
 const swaggerDoc = JSON.parse(fs.readFileSync(process.cwd() + "/specs/tulisin-api.json", "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
+app.use("/api/v1", routes);
+app.use(globalErrorHandler);
+
 const initializeApp = async () => {
   try {
     const db = initializeDatabase(getDatabaseConfig());
     await db.testConnection();
-
-    app.use(globalErrorHandler);
 
     app.listen(3000, () => {
       console.log("Server is running on http://localhost:3000");
@@ -41,4 +43,8 @@ const gracefulShutdown = async () => {
 process.on("SIGTERM", gracefulShutdown);
 process.on("SIGINT", gracefulShutdown);
 
-initializeApp();
+if (require.main === module) {
+  initializeApp();
+}
+
+export default app;

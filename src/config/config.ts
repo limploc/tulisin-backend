@@ -1,7 +1,11 @@
 import dotenv from "dotenv";
 import { DatabaseConfig } from "../database/database";
 
-dotenv.config();
+if (process.env.NODE_ENV === "test") {
+  dotenv.config({ path: ".env.test" });
+} else {
+  dotenv.config();
+}
 
 export const getDatabaseConfig = (): DatabaseConfig => {
   return {
@@ -13,5 +17,18 @@ export const getDatabaseConfig = (): DatabaseConfig => {
     max: parseInt(process.env.DB_POOL_SIZE || "20"),
     idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || "30000"),
     connectionTimeoutMillis: parseInt(process.env.DB_CONNECTION_TIMEOUT || "2000"),
+  };
+};
+
+export const getJwtConfig = () => {
+  return {
+    secret: process.env.JWT_SECRET || "fallback_secret_key_change_in_production",
+    expiresIn: process.env.JWT_EXPIRES_IN || "24h",
+  };
+};
+
+export const getSaltRounds = (): { saltRounds: number } => {
+  return {
+    saltRounds: parseInt(process.env.SALT_ROUNDS || "10"),
   };
 };
